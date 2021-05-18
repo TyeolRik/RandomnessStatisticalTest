@@ -1,0 +1,10 @@
+# github.com/ivpusic/grpool v1.0.0
+## explicit
+github.com/ivpusic/grpool
+# github.com/stretchr/testify v1.7.0
+## explicit
+# golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a
+## explicit
+golang.org/x/crypto/sha3
+# golang.org/x/sys v0.0.0-20201119102817-f84b799fce68
+golang.org/x/sys/cpu
