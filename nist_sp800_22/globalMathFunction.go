@@ -100,3 +100,11 @@ func igam(a float64, x float64) float64 {
 	}
 	return ans * ax / a
 }
+
+func Max(a uint64, b uint64) uint64 {
+	if a > b {
+		return a
+	} else {
+		return b
+	}
+}

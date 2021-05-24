@@ -17,11 +17,12 @@ import (
 	"math"
 )
 
-func Frequency(targetSequence []uint8) float64 {
+// Param n is The length of the bit string.
+func Frequency(n uint64) float64 {
 
 	// Step 1. Conversion to ±1
 	var S_n int64 = 0
-	for _, v := range targetSequence {
+	for _, v := range epsilon {
 		if v == 0 {
 			S_n = S_n - 1
 		} else if v == 1 {
@@ -32,7 +33,7 @@ func Frequency(targetSequence []uint8) float64 {
 	}
 
 	// Step 2. Compute the test statistic S_obs
-	var S_obs float64 = (math.Abs(float64(S_n)) / math.Sqrt(float64(len(targetSequence))))
+	var S_obs float64 = (math.Abs(float64(S_n)) / math.Sqrt(float64(len(epsilon))))
 
 	// Step 3. Compute P-value
 	var P_value float64 = math.Erfc(S_obs / math.Sqrt(2))
