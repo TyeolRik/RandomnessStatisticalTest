@@ -17,7 +17,7 @@ import (
 	"math"
 )
 
-func FrequencyTest(targetSequence []uint8) float64 {
+func Frequency(targetSequence []uint8) float64 {
 
 	// Step 1. Conversion to ±1
 	var S_n int64 = 0
