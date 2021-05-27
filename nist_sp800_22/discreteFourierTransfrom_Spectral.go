@@ -1,48 +1,20 @@
-package main
+/**
+* From NIST SP800-22 Revision 1a. Page 32.
+* 2.6.1 Test Purpose
+* The focus of this test is the peak heights in the Discrete Fourier Transform of the sequence.
+* The purpose of this test is to detect periodic features (i.e., repetitive patterns that are near each other) in the tested sequence
+* that would indicate a deviation from the assumption of randomness.
+* The intention is to detect whether the number of peaks exceeding the 95 % threshold is significantly different than 5 %.
+ */
+
+package nist_sp800_22
 
 import (
 	"math"
 )
 
-var epsilon []uint8
-
-func inputEpsilonAsString(_input string) {
-	epsilon = []uint8{}
-	for _, value := range _input {
-		switch value {
-		case '0':
-			epsilon = append(epsilon, 0)
-		case '1':
-			epsilon = append(epsilon, 1)
-		default:
-			panic("inputEpsilonAsString :: ERROR Input is wrong")
-		}
-	}
-	// Revert
-	for i, j := 0, len(epsilon)-1; i < j; i, j = i+1, j-1 {
-		epsilon[i], epsilon[j] = epsilon[j], epsilon[i]
-	}
-}
-
 // Discrete Fourier Transform
 // 3.6 Discrete Fourier Transform (Specral) Test, Page 68.
-
-// https://gist.github.com/r9y9/8095894
-func DFT_naive(input []float64) ([]float64, []float64) {
-	real := make([]float64, len(input))
-	imag := make([]float64, len(input))
-	arg := 2.0 * math.Pi / float64(len(input))
-	for k := 0; k < len(input); k++ {
-		r, i := 0.0, 0.0
-		for n := 0; n < len(input); n++ {
-			r += input[n] * math.Cos(arg*float64(n)*float64(k))
-			i += input[n] * math.Sin(arg*float64(n)*float64(k))
-		}
-		real[k], imag[k] = r, i
-	}
-	return real, imag
-}
-
 // Wiki definition // https://en.wikipedia.org/wiki/Discrete_Fourier_transform#Definition
 func DFT(X []float64) ([]float64, []float64) {
 	var N float64 = float64(len(X))
@@ -94,10 +66,30 @@ func theNumberOfPeaksLessThanT(input []float64, T float64) int {
 	return count
 }
 
-func main() {
-	inputEpsilonAsString("1100100100001111110110101010001000100001011010001100001000110100110001001100011001100010100010111000")
-	// inputEpsilonAsString("1001010011")
-	var n int = len(epsilon)
+// https://gist.github.com/r9y9/8095894
+func DFT_naive(input []float64) ([]float64, []float64) {
+	real := make([]float64, len(input))
+	imag := make([]float64, len(input))
+	arg := -2.0 * math.Pi / float64(len(input))
+	for k := 0; k < len(input); k++ {
+		r, i := 0.0, 0.0
+		for n := 0; n < len(input); n++ {
+			r += input[n] * math.Cos(arg*float64(n)*float64(k))
+			i += input[n] * math.Sin(arg*float64(n)*float64(k))
+		}
+		real[k], imag[k] = r, i
+	}
+	return real, imag
+}
+
+func Amplitude(real, imag []float64) []float64 {
+	amp := make([]float64, len(real))
+	for i := 0; i < len(real); i++ {
+		amp[i] = math.Sqrt(real[i]*real[i] + imag[i]*imag[i])
+	}
+	return amp
+}
+func DiscreteFourierTransform(n uint64) (float64, bool, error) {
 	var X []float64 = make([]float64, 0, n)
 	for _, value := range epsilon {
 		X = append(X, 2*float64(value)-1)
@@ -142,4 +134,6 @@ func main() {
 	// (8) Compute P-Value
 	P_value := math.Erfc(math.Abs(d) / math.Sqrt2)
 	//fmt.Println("P_value", P_value)
+
+	return P_value, DecisionRule(P_value, 0.01), nil
 }

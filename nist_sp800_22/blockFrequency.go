@@ -37,7 +37,7 @@ func piWithBaseI(M uint64, N uint64) []float64 {
 
 * This function returns P_value in float64
  */
-func BlockFrequency(M uint64, n uint64) float64 {
+func BlockFrequency(M uint64, n uint64) (float64, bool, error) {
 
 	// (1) Partition the input sequence into N = floor(n / M) non-overlapping blocks
 	var N uint64 = n / M
@@ -59,5 +59,5 @@ func BlockFrequency(M uint64, n uint64) float64 {
 
 	// (4) Compute P-value
 	var P_value float64 = igamc(float64(N)/2.0, X2_statistic/2.0)
-	return P_value
+	return P_value, DecisionRule(P_value, LEVEL), nil
 }

@@ -18,7 +18,7 @@ import (
 )
 
 // Param n is The length of the bit string.
-func Frequency(n uint64) float64 {
+func Frequency(n uint64) (float64, bool, error) {
 
 	// Step 1. Conversion to ±1
 	var S_n int64 = 0
@@ -28,7 +28,7 @@ func Frequency(n uint64) float64 {
 		} else if v == 1 {
 			S_n = S_n + 1
 		} else {
-			panic(errors.New("one of input bits is neither 0 nor 1"))
+			return __ERROR_float64__, false, errors.New("one of input bits is neither 0 nor 1")
 		}
 	}
 
@@ -38,7 +38,7 @@ func Frequency(n uint64) float64 {
 	// Step 3. Compute P-value
 	var P_value float64 = math.Erfc(S_obs / math.Sqrt(2))
 
-	return P_value
+	return P_value, DecisionRule(P_value, LEVEL), nil
 
 	/**
 	* 2.1.5 Decision Rule (at the 1% Level)

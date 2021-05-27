@@ -12,13 +12,14 @@
 package nist_sp800_22
 
 import (
+	"errors"
 	"fmt"
 	"math"
 )
 
 // Runs function returns "The total number of runs" across all n bits.
 // the total number of zero runs + the total number of one-runs
-func Runs(n uint64) float64 {
+func Runs(n uint64) (float64, bool, error) {
 	var pi float64 = 0
 	var _n_float64 = float64(n) // For Speed
 
@@ -31,8 +32,7 @@ func Runs(n uint64) float64 {
 	var tau float64 = 2.0 / math.Sqrt(_n_float64) // Note that for this test, var τ(tau) has been pre-defined in the test code.
 	if math.Abs(pi-(1.0/2.0)) >= tau {
 		// then the Runs test need not be performed
-		fmt.Errorf("the Runs test need not be performed! Because (%f) >= (tau = %f)", math.Abs(pi-(1.0/2.0)), tau)
-		return 0.0000
+		return __ERROR_float64__, false, errors.New(fmt.Sprintf("the Runs test need not be performed! Because (%f) >= (tau = %f)", math.Abs(pi-(1.0/2.0)), tau))
 	}
 
 	// Compute the test statistic V_n
@@ -47,7 +47,7 @@ func Runs(n uint64) float64 {
 	V_n = V_n + 1
 
 	var P_value float64 = math.Erfc(math.Abs(V_n-2*_n_float64*pi*(1-pi)) / (2 * math.Sqrt(2.0*_n_float64) * pi * (1 - pi)))
-	return P_value
+	return P_value, DecisionRule(P_value, LEVEL), nil
 
 	/**
 	* 2.3.5. Decision Rule (at the 1% Level)
