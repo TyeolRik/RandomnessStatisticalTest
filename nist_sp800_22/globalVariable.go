@@ -52,6 +52,20 @@ func inputEpsilonAsString(_input string) {
 	}
 }
 
+func inputEpsilonAsString_NonRevert(_input string) {
+	epsilon = []uint8{}
+	for _, value := range _input {
+		switch value {
+		case '0':
+			epsilon = append(epsilon, 0)
+		case '1':
+			epsilon = append(epsilon, 1)
+		default:
+			panic("inputEpsilonAsString :: ERROR Input is wrong")
+		}
+	}
+}
+
 func prepare_CONSTANT_E_asEpsilon() error {
 	dat, err := ioutil.ReadFile(__FILE_CONSTANT_E_LOCATION_)
 	var constant_E_binary []uint8

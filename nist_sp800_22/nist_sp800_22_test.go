@@ -104,3 +104,29 @@ func TestRank(t *testing.T) {
 	P_value, _, _ := Rank(100000)
 	fmt.Printf("P-value : %f\n", P_value)
 }
+
+func TestNonOverlappingTemplateMatching(t *testing.T) {
+	inputEpsilonAsString_NonRevert("10100100101110010110")
+
+	theTemplate := []uint8{0, 0, 1}
+
+	P_value, _, _ := NonOverlappingTemplateMatching(theTemplate, 10)
+	fmt.Printf("P-value : %f\n", P_value)
+}
+
+func TestOverlappingTemplateMatching(t *testing.T) {
+	/*
+		readERR := prepare_CONSTANT_E_asEpsilon()
+		if readERR != nil {
+			t.Error("FAILED TO GET CONSTANT E")
+		}
+		epsilon = epsilon[0:1000000]
+	*/
+	inputEpsilonAsString_NonRevert("10111011110010110100011100101110111110000101101001")
+
+	// theTemplate := []uint8{1, 1, 1, 1, 1, 1, 1, 1, 1}
+	theTemplate := []uint8{1, 1}
+
+	P_value, _, _ := OverlappingTemplateMatching(theTemplate, 10)
+	fmt.Printf("P-value : %f\n", P_value)
+}

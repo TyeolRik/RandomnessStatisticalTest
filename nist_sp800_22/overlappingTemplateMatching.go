@@ -1,88 +1,77 @@
-package main
+/**
+* From NIST SP800-22 Revision 1a.
+* 2.8.1 Test Purpose
+* The focus of the Overlapping Template Matching test is the number of occurrences of pre-specified target strings.
+* Both this test and the Non-overlapping Template Matching test of Section 2.7 use an m-bit window to search for a specific m-bit pattern.
+* As with the test in Section 2.7, if the pattern is not found, the window slides one bit position.
+* If the pattern is not found, the window slides one bit position.
+* The difference between this test and the test in Section 2.7 is that when the pattern is found, the window slides only one bit before resuming the search.
+ */
+
+package nist_sp800_22
 
 import (
 	"fmt"
 	"math"
 )
 
-var epsilon []uint8
-
-func inputEpsilonAsString(_input string) {
-	epsilon = []uint8{}
-	for _, value := range _input {
-		switch value {
-		case '0':
-			epsilon = append(epsilon, 0)
-		case '1':
-			epsilon = append(epsilon, 1)
-		default:
-			panic("inputEpsilonAsString :: ERROR Input is wrong")
-		}
-	}
-	/*
-		// Revert
-		for i, j := 0, len(epsilon)-1; i < j; i, j = i+1, j-1 {
-			epsilon[i], epsilon[j] = epsilon[j], epsilon[i]
-		}
-	*/
-}
-
-func main() {
-
-	var B []uint8 = []uint8{1, 1, 1, 1, 1, 1, 1, 1, 1}
+// Original Function in Official Document was func NonOverlappingTemplateMatching(m uint64, n uint64, eachBlockSize uint64)
+// However, this parameter look slightly odd to Golang. So, I changed.
+//
+// Variable B
+// The m-bit template to be matched
+// B is a string of ones and zeros (of length m)
+// which is defined in a template library of non-periodic patterns contained within the test code.
+func OverlappingTemplateMatching(B []uint8, eachBlockSize uint64) (float64, bool, error) {
 
 	// Original Parameter
 	var m int = len(B)
-	//var n int = 1000000
+	var n int = len(epsilon)
 
-	var M uint64 = 1032 // The length in bits of the substring of ε to be tested.
-	//var N uint64 = (uint64(n) / M) // The number of independent blocks. N has been fixed at 8 in the test code.
+	var M uint64 = eachBlockSize   // The length in bits of the substring of ε to be tested.
+	var N uint64 = (uint64(n) / M) // The number of independent blocks. N has been fixed at 8 in the test code.
 
 	// (1) Partition the sequence into N independent blocks of length M.
-	//var blocks [][]uint8 = make([][]uint8, N)
+	var blocks [][]uint8 = make([][]uint8, N)
 	var v []float64 = make([]float64, 6) // the number of occurrences of B in each block by incrementing an array v[i]
-	//var partitionStart uint64 = 0
-	//var partitionEnd uint64 = M
-	/*
-		for j := range blocks {
-			blocks[j] = epsilon[partitionStart:partitionEnd]
-			partitionStart = partitionEnd
-			partitionEnd = partitionEnd + M
-		}
-		fmt.Println("N", N)
+	var partitionStart uint64 = 0
+	var partitionEnd uint64 = M
+	for j := range blocks {
+		blocks[j] = epsilon[partitionStart:partitionEnd]
+		partitionStart = partitionEnd
+		partitionEnd = partitionEnd + M
+	}
+	fmt.Println("N", N)
 
-			var hit uint64 = 0
-			// (2) Search for matches
-				for j := range blocks {
-					hit = 0
-					for bitPosition := 0; bitPosition <= int(M)-m; bitPosition++ {
-						for i := range B {
-							if blocks[j][bitPosition+i] != B[i] {
-								goto UN_HIT
-							}
-						}
-						// Hit
-						hit++
-					UN_HIT:
-					}
-					// Misprint
-					// In this part, There is example error. Page 40.
-					if hit > 0 {
-						if hit > 5 {
-							v[5]++
-						} else {
-							v[hit]++
-						}
-					}
+	var hit uint64 = 0
+	// (2) Search for matches
+	for j := range blocks {
+		hit = 0
+		for bitPosition := 0; bitPosition <= int(M)-m; bitPosition++ {
+			for i := range B {
+				if blocks[j][bitPosition+i] != B[i] {
+					goto UN_HIT
 				}
-	*/
-	// v = []float64{0, 1, 1, 1, 1, 1}
-	v = []float64{329, 164, 150, 111, 78, 136}
+			}
+			// Hit
+			hit++
+		UN_HIT:
+		}
+		// Misprint
+		// In this part, There is example error. Page 40.
+		if hit > 0 {
+			if hit > 5 {
+				v[5]++
+			} else {
+				v[hit]++
+			}
+		}
+	}
 
 	// (3) Compute values for λand η
 	// that will be used to compute the theoretical probabilities π_i corresponding to the classes of v0:
 	var _float64_m float64 = float64(m)
-	var lambda float64 = float64(float64(M)-_float64_m+1.0) / math.Pow(2.0, _float64_m)
+	var lambda float64 = (float64(M) - _float64_m + 1) / math.Pow(2, _float64_m)
 	var eta float64 = lambda / 2.0
 	fmt.Println("lambda\t", lambda)
 	fmt.Println("eta\t", eta)
@@ -91,43 +80,35 @@ func main() {
 	// (4) Compute χ^2 as specified in Section 3.8 (Page. 74)
 	var pi []float64 = []float64{0.364091, 0.185659, 0.139381, 0.100571, 0.070432, 0.139865} // On page 74
 	// var pi []float64 = []float64{0.324652, 0.182617, 0.142670, 0.106645, 0.077147, 0.166269}
-	//var pi2 []float64 = []float64{0.364091, 0.185659, 0.139381, 0.100571, 0.070432, 0.139865}
 	var p float64 = math.Exp(-1 * eta)
 	fmt.Println("P(U=0)\t", p)
 
-	fmt.Println(pi)
 	// Compute Probabilities
-	/*
-		sum := 0.0
-		sum2 := 0.0
-		K := 5
-		for i := 0; i < K; i++ {
-			pi[i] = Pr(i, eta)
-			pi2[i] = Pr_ver2(i, eta)
-			sum += pi[i]
-			sum2 += pi2[i]
-		}
-		pi[K] = 1 - sum
-		pi2[K] = 1 - sum2
-		fmt.Printf("%.6f", pi)
-		fmt.Printf("\n")
-		fmt.Printf("%.6f", pi2)
-		fmt.Printf("\n")
-	*/
+	sum := 0.0
+	K := 5
+	for i := 0; i < K; i++ {
+		pi[i] = Pr(i, eta)
+		sum += pi[i]
+	}
+	pi[K] = 1 - sum
+	fmt.Println(pi)
 
-	var chi_square float64 = 0.0
-	// var chi_square2 float64 = 0
-	fmt.Println(v)
+	var chi_square float64 = 0
 	for i := range v {
 		var temp float64 = 5.0 * pi[i]
-		//var temp2 float64 = 5.0 * pi2[i]
 		chi_square += (v[i] - temp) * (v[i] - temp) / temp
-		//chi_square2 += (v[i] - temp2) * (v[i] - temp2) / temp2
 	}
 	fmt.Println("chi_square\t", chi_square)
-	//fmt.Println("chi_square2\t", chi_square2)
+
+	// (5) Compute P-value
+	var P_value float64 = igamc(2.5, chi_square/2.0)
+	// Misprint report : in Page 41. P-value = igamc(5.0/2.0, 3.167729/2.0) = 0.274932
+	// But igamc(5.0/2.0, 3.167729/2.0) = 0.6741449650657756 in Cephes.
+
+	return P_value, DecisionRule(P_value, 0.01), nil
 }
 
+/*
 func Factorial(n uint64) (result uint64) {
 	if n > 0 {
 		result = n * Factorial(n-1)
@@ -174,6 +155,7 @@ func Pr_ver2(u int, eta float64) float64 {
 		return eta * math.Exp(-2*eta) / math.Exp2(float64(u)) * KummerFunction(float64(u+1), 2, eta)
 	}
 }
+*/
 
 // Reference : https://github.com/terrillmoore/NIST-Statistical-Test-Suite/blob/master/sts/src/overlappingTemplateMatchings.c#L95-L110
 func Pr(u int, eta float64) float64 {
