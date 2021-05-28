@@ -12,7 +12,6 @@
 package nist_sp800_22
 
 import (
-	"errors"
 	"fmt"
 	"math"
 )
@@ -32,7 +31,7 @@ func Runs(n uint64) (float64, bool, error) {
 	var tau float64 = 2.0 / math.Sqrt(_n_float64) // Note that for this test, var τ(tau) has been pre-defined in the test code.
 	if math.Abs(pi-(1.0/2.0)) >= tau {
 		// then the Runs test need not be performed
-		return __ERROR_float64__, false, errors.New(fmt.Sprintf("the Runs test need not be performed! Because (%f) >= (tau = %f)", math.Abs(pi-(1.0/2.0)), tau))
+		return __ERROR_float64__, false, fmt.Errorf("the Runs test need not be performed! Because (%f) >= (tau = %f)", math.Abs(pi-(1.0/2.0)), tau)
 	}
 
 	// Compute the test statistic V_n

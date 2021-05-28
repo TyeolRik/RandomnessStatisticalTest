@@ -147,7 +147,7 @@ Forward_STEP2:
 				break
 			}
 		}
-		if isContained == false {
+		if !isContained {
 			goto Forward_STEP4
 		}
 	}
@@ -209,7 +209,7 @@ Backward_STEP_2:
 				break
 			}
 		}
-		if isContained == false {
+		if !isContained {
 			goto Backward_STEP_4
 		}
 	}
