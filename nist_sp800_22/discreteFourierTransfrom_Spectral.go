@@ -45,6 +45,7 @@ func Modulus(real, imag []float64) []float64 {
 	return modulus
 }
 
+/* Unused
 // Definition of Peak
 // An observation in an ordered series is said to be a “peak” if its value is greater than the value of its two neighbouring observations.
 // Reference : [OECD - Statistical Terms](https://stats.oecd.org/glossary/detail.asp?ID=3780)
@@ -65,6 +66,7 @@ func theNumberOfPeaksLessThanT(input []float64, T float64) int {
 	// fmt.Println("The Number of Peaks", numberOfPeak)
 	return count
 }
+*/
 
 // https://gist.github.com/r9y9/8095894
 func DFT_naive(input []float64) ([]float64, []float64) {
