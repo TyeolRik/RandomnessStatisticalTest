@@ -1,31 +1,14 @@
-package main
+// From NIST SP800-22 Revision 1a.
+// 2.9.1 Test Purpose
+// The focus of this test is the number of bits between matching patterns (a measure that is related to the length of a compressed sequence).
+// The purpose of the test is to detect whether or not the sequence can be significantly compressed without loss of information.
+// A significantly compressible sequence is considered to be non-random.
+
+package nist_sp800_22
 
 import (
-	"fmt"
 	"math"
 )
-
-var epsilon []uint8
-
-func inputEpsilonAsString(_input string) {
-	epsilon = []uint8{}
-	for _, value := range _input {
-		switch value {
-		case '0':
-			epsilon = append(epsilon, 0)
-		case '1':
-			epsilon = append(epsilon, 1)
-		default:
-			panic("inputEpsilonAsString :: ERROR Input is wrong")
-		}
-	}
-	/*
-		// Revert
-		for i, j := 0, len(epsilon)-1; i < j; i, j = i+1, j-1 {
-			epsilon[i], epsilon[j] = epsilon[j], epsilon[i]
-		}
-	*/
-}
 
 func array2Binaryint(arr []uint8) uint64 {
 	var numberOfDigit uint64 = 1
@@ -40,41 +23,28 @@ func array2Binaryint(arr []uint8) uint64 {
 	return _index_T
 }
 
-func main() {
-
+func Universal(L uint64, Q uint64, n uint64) (float64, bool, error) {
 	// Pre-calculated Value from "Handbook of Applied Cryptography", Page 184. Table 5.3
 	var expectedValue_mu [16]float64 = [16]float64{0.7326495, 1.5374383, 2.4016068, 3.3112247, 4.2534266, 5.2177052, 6.1962507, 7.1836656, 8.1764248, 9.1723243, 10.170032, 11.168765, 12.168070, 13.167693, 14.167488, 15.167379}
 	var variance_sigma [16]float64 = [16]float64{0.690, 1.338, 1.901, 2.358, 2.705, 2.954, 3.125, 3.238, 3.311, 3.356, 3.384, 3.401, 3.410, 3.416, 3.419, 3.421}
 
-	var L uint64 = 2
-	var Q uint64 = 4
-	var n uint64 = 20
 	var K uint64 = (n / L) - Q
 	//var _int_L = int(L)
 	// var _float64_L float64 = float64(L)
 	var _float64_Q float64 = float64(Q)
 
-	var initializationSegment []uint8 = make([]uint8, Q*L)
-	var testSegment []uint8 = make([]uint8, K*L)
 	var blocks [][]uint8 = make([][]uint8, 0, Q+K)
 	var T []float64 = make([]float64, Q)
 
-	initializationSegment = []uint8{0, 1, 0, 1, 1, 0, 1, 0}
-	testSegment = []uint8{0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1}
-
 	// Divide into L-bits
 	var blockNum uint64 = 0
-	temp := append(initializationSegment, testSegment...)
-	fmt.Println("length", len(blocks))
-	fmt.Println(temp)
 	for {
-		blocks = append(blocks, temp[blockNum*L:blockNum*L+L])
+		blocks = append(blocks, epsilon[blockNum*L:blockNum*L+L])
 		blockNum++
 		if blockNum >= Q+K {
 			break
 		}
 	}
-	fmt.Println("length", len(blocks))
 
 	var sum float64 = 0.0
 	for blockNumber, eachBlocks := range blocks {
@@ -95,15 +65,13 @@ func main() {
 
 	// (4) Compute the test statistic
 	var f_n float64 = sum / float64(K)
-	fmt.Println("f_n", f_n)
 
 	// (5) Compute P-value
 
 	// 5-1. Compute σ
 	// var c float64 = 0.7 - 0.8/_float64_L + (4.0+32.0/_float64_L)*math.Pow(float64(K), -3.0/_float64_L)/15.0
-	fmt.Println("expectedValue\t", expectedValue_mu[L-1])
-	fmt.Println("variance σ\t", variance_sigma[L-1])
-	var P_value float64 = math.Erfc(math.Abs((f_n - expectedValue_mu[L-1]) / (math.Sqrt2 * math.Sqrt(variance_sigma[L-1]))))
+	var P_value float64 = math.Erfc(math.Abs((f_n - expectedValue_mu[L-1]) / (math.Sqrt2 * variance_sigma[L-1])))
 	// P_value := math.Erfc(math.Abs(son / mom))
-	fmt.Println("P_value", P_value)
+
+	return P_value, DecisionRule(P_value, LEVEL), nil
 }
