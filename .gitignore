@@ -21,3 +21,6 @@ constant_pi
 
 # VS Code Configuration
 .vscode/
+
+# Private Test Files
+*.old
