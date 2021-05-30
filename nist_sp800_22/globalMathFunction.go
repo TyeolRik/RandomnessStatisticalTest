@@ -15,6 +15,17 @@ func DecisionRule(_P_value float64, level float64) bool {
 	}
 }
 
+func DecisionRule2(_P_value1 float64, _P_value2 float64, level float64) bool {
+	if level < 0 || level > 1 {
+		panic("input level is wrong. this value should be between 0 < level < 1")
+	}
+	if _P_value1 < level || _P_value2 < level {
+		return false // Non-random
+	} else {
+		return true // random
+	}
+}
+
 /**
 * According to, NIST SP800-22 Page 99, Gamma Function and Imcomplete Gamma Function are described
 * Fully Implemented from Cephes C

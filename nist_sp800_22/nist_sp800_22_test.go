@@ -3,6 +3,7 @@ package nist_sp800_22
 import (
 	"crypto/rand"
 	"fmt"
+	"reflect"
 	"testing"
 )
 
@@ -145,4 +146,40 @@ func TestLinearComplexity(t *testing.T) {
 	epsilon = epsilon[0:1000000]
 	P_value, _, _ := LinearComplexity(1000, uint64(len(epsilon)))
 	fmt.Printf("P-value : %f\n", P_value)
+}
+
+func TestSerial(t *testing.T) {
+	readERR := prepare_CONSTANT_E_asEpsilon()
+	if readERR != nil {
+		t.Error("FAILED TO GET CONSTANT E")
+	}
+	epsilon = epsilon[0:1000000]
+	fmt.Println("Loading E complete")
+
+	P_value1, P_value2, _, _ := Serial(2, uint64(len(epsilon)))
+	fmt.Printf("P-value1 : %f\n", P_value1)
+	fmt.Printf("P_value2 : %f\n", P_value2)
+}
+
+func TestFunctions(t *testing.T) {
+	a := []uint8{1, 2, 3, 4, 5}
+	var b []uint8 = nil
+	fmt.Println("isEqual", isEqualBetweenBitsArray(a, b))
+	fmt.Println("isEqual", reflect.DeepEqual(a, b))
+}
+
+func BenchmarkMyFunction(b *testing.B) {
+	a1 := Uint_To_BitsArray(^uint64(0))
+	a2 := Uint_To_BitsArray(^uint64(0))
+	for i := 0; i < b.N; i++ {
+		isEqualBetweenBitsArray(a1, a2)
+	}
+}
+
+func BenchmarkReflect(b *testing.B) {
+	a1 := Uint_To_BitsArray(^uint64(0))
+	a2 := Uint_To_BitsArray(^uint64(0))
+	for i := 0; i < b.N; i++ {
+		reflect.DeepEqual(a1, a2)
+	}
 }
