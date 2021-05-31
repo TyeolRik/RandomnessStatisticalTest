@@ -8,7 +8,6 @@
 package nist_sp800_22
 
 import (
-	"fmt"
 	"math"
 )
 
@@ -50,18 +49,18 @@ func Serial(m uint64, n uint64) (float64, float64, bool, error) {
 		psi[i] = math.Pow(2.0, float64(m)-float64(i))/float64(n)*psi[i] - float64(n)
 		// CAUTION :: Possible to happen Floating-point error mitigation
 	}
-	fmt.Println("v[2]", v[2])
-	fmt.Println("PSI: ", psi)
+	//fmt.Println("PSI: ", psi)
 
 	// (4) Compute ∇ψ^2 and ∇^2ψ^2
 	delta1 := psi[0] - psi[1]
 	delta2 := psi[0] - 2*psi[1] + psi[2]
-	fmt.Println("Delta1:", delta1)
-	fmt.Println("Delta2:", delta2)
+	//fmt.Println("Delta1:", delta1)
+	//fmt.Println("Delta2:", delta2)
 
 	// (5) Compute P_value
-	P_value1 := igamc(2.0, delta1/2.0)
-	P_value2 := igamc(1.0, delta2/2.0)
+	var tempArg float64 = math.Pow(2.0, float64(m-2))
+	P_value1 := igamc(tempArg, delta1/2.0)
+	P_value2 := igamc(tempArg/2.0, delta2/2.0)
 
 	return P_value1, P_value2, DecisionRule2(P_value1, P_value2, LEVEL), nil
 }

@@ -154,7 +154,6 @@ func TestSerial(t *testing.T) {
 		t.Error("FAILED TO GET CONSTANT E")
 	}
 	epsilon = epsilon[0:1000000]
-	fmt.Println("Loading E complete")
 
 	P_value1, P_value2, _, _ := Serial(2, uint64(len(epsilon)))
 	fmt.Printf("P-value1 : %f\n", P_value1)
