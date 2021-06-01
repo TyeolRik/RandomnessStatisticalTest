@@ -160,6 +160,46 @@ func TestSerial(t *testing.T) {
 	fmt.Printf("P_value2 : %f\n", P_value2)
 }
 
+func TestApproximateEntropy(t *testing.T) {
+	//inputEpsilonAsString_NonRevert("1100100100001111110110101010001000100001011010001100001000110100110001001100011001100010100010111000")
+	//P_value, _, _ := ApproximateEntropy(2, uint64(len(epsilon)))
+	inputEpsilonAsString_NonRevert("0100110101")
+	P_value, _, _ := ApproximateEntropy(3, uint64(len(epsilon)))
+	fmt.Printf("P-value : %f\n", P_value)
+}
+func TestCumulativeSums(t *testing.T) {
+	inputEpsilonAsString_NonRevert("1100100100001111110110101010001000100001011010001100001000110100110001001100011001100010100010111000")
+	P_value_forward, _, _ := CumulativeSums(0, uint64(len(epsilon)))
+	P_value_backward, _, _ := CumulativeSums(1, uint64(len(epsilon)))
+	fmt.Printf("P-value  (forward) : %f\n", P_value_forward)
+	fmt.Printf("P-value (backward) : %f\n", P_value_backward)
+}
+
+func TestRandomExcursions(t *testing.T) {
+	//inputEpsilonAsString_NonRevert("0110110101")
+
+	readERR := prepare_CONSTANT_E_asEpsilon()
+	if readERR != nil {
+		t.Error("FAILED TO GET CONSTANT E")
+	}
+	epsilon = epsilon[0:1000000]
+
+	P_value, _, _ := RandomExcursions(uint64(len(epsilon)))
+	fmt.Printf("P-value : %f\n", P_value)
+}
+func TestRandomExcursionsVariant(t *testing.T) {
+	// inputEpsilonAsString_NonRevert("0110110101")
+
+	readERR := prepare_CONSTANT_E_asEpsilon()
+	if readERR != nil {
+		t.Error("FAILED TO GET CONSTANT E")
+	}
+	epsilon = epsilon[0:1000000]
+
+	P_value, _, _ := RandomExcursionsVariant(uint64(len(epsilon)))
+	fmt.Printf("P-value : %f\n", P_value)
+}
+
 func TestFunctions(t *testing.T) {
 	a := []uint8{1, 2, 3, 4, 5}
 	var b []uint8 = nil

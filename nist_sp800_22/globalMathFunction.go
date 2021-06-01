@@ -283,3 +283,10 @@ Backward_STEP_4:
 
 	return rank
 }
+
+// https://stats.stackexchange.com/a/187909
+// Wolfram Alpha : Online Computation
+// https://www.wolframalpha.com/input/?i=1+%2F+sqrt%282+*+pi%29+integral_%28-inf%29%5Ez+e%5E%28-u%5E2+%2F+2%29+du
+func CumulativeDistribution(z float64) float64 {
+	return 0.5 * (math.Erf(z/math.Sqrt2) + 1.0)
+}
