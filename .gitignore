@@ -24,3 +24,6 @@ constant_pi
 
 # Private Test Files
 *.old
+
+# No use goroutine
+goroutine_test/

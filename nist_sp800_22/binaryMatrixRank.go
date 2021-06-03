@@ -9,7 +9,6 @@
 package nist_sp800_22
 
 import (
-	"fmt"
 	"math"
 )
 
@@ -52,10 +51,10 @@ func Rank(n uint64) (float64, bool, error) {
 	var __N_float64 = float64(N)
 	var chi_square float64 = (__F_M_float64-0.2888*__N_float64)*(__F_M_float64-0.2888*__N_float64)/(0.2888*__N_float64) + (__F_M_minus_one_float64-0.5776*__N_float64)*(__F_M_minus_one_float64-0.5776*__N_float64)/(0.5776*__N_float64) + (__N_float64-__F_M_float64-__F_M_minus_one_float64-0.1336*__N_float64)*(__N_float64-__F_M_float64-__F_M_minus_one_float64-0.1336*__N_float64)/(0.1336*__N_float64)
 
-	fmt.Println("N", N, __N_float64)
-	fmt.Println("F_M", F[M], __F_M_float64)
-	fmt.Println("F_M-1", F[M-1], __F_M_minus_one_float64)
-	fmt.Println("X^2 : ", chi_square)
+	//fmt.Println("N", N, __N_float64)
+	//fmt.Println("F_M", F[M], __F_M_float64)
+	//fmt.Println("F_M-1", F[M-1], __F_M_minus_one_float64)
+	//fmt.Println("X^2 : ", chi_square)
 	// (5) Compute P_Value
 	var P_value float64 = math.Pow(math.E, -1*chi_square/2)
 

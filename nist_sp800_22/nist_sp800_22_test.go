@@ -29,13 +29,13 @@ func generateRandomBitArray() []uint8 {
 }
 
 func TestConstant(t *testing.T) {
-	err := prepare_CONSTANT_E_asEpsilon()
+	err := Prepare_CONSTANT_E_asEpsilon()
 	if err != nil {
 		t.Errorf("FAILED TO GET CONSTANT E")
 	}
 	// fmt.Println(epsilon[0:100])
 
-	err = prepare_CONSTANT_PI_asEpsilon()
+	err = Prepare_CONSTANT_PI_asEpsilon()
 	if err != nil {
 		t.Errorf("FAILED TO GET CONSTANT PI")
 	}
@@ -75,28 +75,28 @@ func TestFrequency(t *testing.T) {
 
 func TestBlockFrequency(t *testing.T) {
 	testArray := []uint8{0, 1, 1, 0, 0, 1, 1, 0, 1, 0}
-	inputEpsilon(testArray)
+	InputEpsilon(testArray)
 
 	P_value, pass, err := BlockFrequency(3, 10)
 	fmt.Println(P_value, pass, err)
 }
 
 func TestRuns(t *testing.T) {
-	inputEpsilonAsString("1100100100001111110110101010001000100001011010001100001000110100110001001100011001100010100010111000")
+	InputEpsilonAsString("1100100100001111110110101010001000100001011010001100001000110100110001001100011001100010100010111000")
 
 	P_value, _, _ := Runs(uint64(len(epsilon)))
 	fmt.Println(P_value)
 }
 
 func TestLongestRunOfOnes(t *testing.T) {
-	inputEpsilonAsString("11001100000101010110110001001100111000000000001001001101010100010001001111010110100000001101011111001100111001101101100010110010")
+	InputEpsilonAsString("11001100000101010110110001001100111000000000001001001101010100010001001111010110100000001101011111001100111001101101100010110010")
 
 	P_value, _, _ := LongestRunOfOnes(128)
 	fmt.Println(P_value)
 }
 
 func TestRank(t *testing.T) {
-	readERR := prepare_CONSTANT_E_asEpsilon()
+	readERR := Prepare_CONSTANT_E_asEpsilon()
 	if readERR != nil {
 		t.Error("FAILED TO GET CONSTANT E")
 	}
@@ -107,7 +107,7 @@ func TestRank(t *testing.T) {
 }
 
 func TestNonOverlappingTemplateMatching(t *testing.T) {
-	inputEpsilonAsString_NonRevert("10100100101110010110")
+	InputEpsilonAsString_NonRevert("10100100101110010110")
 
 	theTemplate := []uint8{0, 0, 1}
 
@@ -123,7 +123,7 @@ func TestOverlappingTemplateMatching(t *testing.T) {
 		}
 		epsilon = epsilon[0:1000000]
 	*/
-	inputEpsilonAsString_NonRevert("10111011110010110100011100101110111110000101101001")
+	InputEpsilonAsString_NonRevert("10111011110010110100011100101110111110000101101001")
 
 	// theTemplate := []uint8{1, 1, 1, 1, 1, 1, 1, 1, 1}
 	theTemplate := []uint8{1, 1}
@@ -133,13 +133,13 @@ func TestOverlappingTemplateMatching(t *testing.T) {
 }
 
 func TestUniversal(t *testing.T) {
-	inputEpsilonAsString_NonRevert("01011010011101010111")
+	InputEpsilonAsString_NonRevert("01011010011101010111")
 	P_value, _, _ := Universal(2, 4, uint64(len(epsilon)))
 	fmt.Printf("P-value : %f\n", P_value)
 }
 
 func TestLinearComplexity(t *testing.T) {
-	readERR := prepare_CONSTANT_E_asEpsilon()
+	readERR := Prepare_CONSTANT_E_asEpsilon()
 	if readERR != nil {
 		t.Error("FAILED TO GET CONSTANT E")
 	}
@@ -149,7 +149,7 @@ func TestLinearComplexity(t *testing.T) {
 }
 
 func TestSerial(t *testing.T) {
-	readERR := prepare_CONSTANT_E_asEpsilon()
+	readERR := Prepare_CONSTANT_E_asEpsilon()
 	if readERR != nil {
 		t.Error("FAILED TO GET CONSTANT E")
 	}
@@ -163,12 +163,12 @@ func TestSerial(t *testing.T) {
 func TestApproximateEntropy(t *testing.T) {
 	//inputEpsilonAsString_NonRevert("1100100100001111110110101010001000100001011010001100001000110100110001001100011001100010100010111000")
 	//P_value, _, _ := ApproximateEntropy(2, uint64(len(epsilon)))
-	inputEpsilonAsString_NonRevert("0100110101")
+	InputEpsilonAsString_NonRevert("0100110101")
 	P_value, _, _ := ApproximateEntropy(3, uint64(len(epsilon)))
 	fmt.Printf("P-value : %f\n", P_value)
 }
 func TestCumulativeSums(t *testing.T) {
-	inputEpsilonAsString_NonRevert("1100100100001111110110101010001000100001011010001100001000110100110001001100011001100010100010111000")
+	InputEpsilonAsString_NonRevert("1100100100001111110110101010001000100001011010001100001000110100110001001100011001100010100010111000")
 	P_value_forward, _, _ := CumulativeSums(0, uint64(len(epsilon)))
 	P_value_backward, _, _ := CumulativeSums(1, uint64(len(epsilon)))
 	fmt.Printf("P-value  (forward) : %f\n", P_value_forward)
@@ -178,7 +178,7 @@ func TestCumulativeSums(t *testing.T) {
 func TestRandomExcursions(t *testing.T) {
 	//inputEpsilonAsString_NonRevert("0110110101")
 
-	readERR := prepare_CONSTANT_E_asEpsilon()
+	readERR := Prepare_CONSTANT_E_asEpsilon()
 	if readERR != nil {
 		t.Error("FAILED TO GET CONSTANT E")
 	}
@@ -190,7 +190,7 @@ func TestRandomExcursions(t *testing.T) {
 func TestRandomExcursionsVariant(t *testing.T) {
 	// inputEpsilonAsString_NonRevert("0110110101")
 
-	readERR := prepare_CONSTANT_E_asEpsilon()
+	readERR := Prepare_CONSTANT_E_asEpsilon()
 	if readERR != nil {
 		t.Error("FAILED TO GET CONSTANT E")
 	}

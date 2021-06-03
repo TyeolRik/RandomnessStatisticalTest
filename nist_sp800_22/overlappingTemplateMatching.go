@@ -11,7 +11,6 @@
 package nist_sp800_22
 
 import (
-	"fmt"
 	"math"
 )
 
@@ -41,7 +40,7 @@ func OverlappingTemplateMatching(B []uint8, eachBlockSize uint64) (float64, bool
 		partitionStart = partitionEnd
 		partitionEnd = partitionEnd + M
 	}
-	fmt.Println("N", N)
+	// fmt.Println("N", N)
 
 	var hit uint64 = 0
 	// (2) Search for matches
@@ -73,15 +72,15 @@ func OverlappingTemplateMatching(B []uint8, eachBlockSize uint64) (float64, bool
 	var _float64_m float64 = float64(m)
 	var lambda float64 = (float64(M) - _float64_m + 1) / math.Pow(2, _float64_m)
 	var eta float64 = lambda / 2.0
-	fmt.Println("lambda\t", lambda)
-	fmt.Println("eta\t", eta)
+	// fmt.Println("lambda\t", lambda)
+	// fmt.Println("eta\t", eta)
 
 	// Page 40.
 	// (4) Compute χ^2 as specified in Section 3.8 (Page. 74)
 	var pi []float64 = []float64{0.364091, 0.185659, 0.139381, 0.100571, 0.070432, 0.139865} // On page 74
 	// var pi []float64 = []float64{0.324652, 0.182617, 0.142670, 0.106645, 0.077147, 0.166269}
-	var p float64 = math.Exp(-1 * eta)
-	fmt.Println("P(U=0)\t", p)
+	// var p float64 = math.Exp(-1 * eta)
+	// fmt.Println("P(U=0)\t", p)
 
 	// Compute Probabilities
 	sum := 0.0
@@ -91,14 +90,14 @@ func OverlappingTemplateMatching(B []uint8, eachBlockSize uint64) (float64, bool
 		sum += pi[i]
 	}
 	pi[K] = 1 - sum
-	fmt.Println(pi)
+	// fmt.Println(pi)
 
 	var chi_square float64 = 0
 	for i := range v {
 		var temp float64 = 5.0 * pi[i]
 		chi_square += (v[i] - temp) * (v[i] - temp) / temp
 	}
-	fmt.Println("chi_square\t", chi_square)
+	// fmt.Println("chi_square\t", chi_square)
 
 	// (5) Compute P-value
 	var P_value float64 = igamc(2.5, chi_square/2.0)

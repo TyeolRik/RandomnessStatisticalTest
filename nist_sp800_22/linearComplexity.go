@@ -8,7 +8,6 @@
 package nist_sp800_22
 
 import (
-	"fmt"
 	"math"
 )
 
@@ -201,7 +200,7 @@ func LinearComplexity(M uint64, n uint64) (float64, bool, error) {
 		chi_square += (v[i] - N_pi) * (v[i] - N_pi) / N_pi
 
 	}
-	fmt.Println("x^2(obs):", chi_square)
+	// fmt.Println("x^2(obs):", chi_square)
 
 	var P_value float64 = igamc(float64(K)/2.0, chi_square/2.0)
 

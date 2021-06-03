@@ -2,6 +2,8 @@ package nist_sp800_22
 
 import (
 	"io/ioutil"
+	"path/filepath"
+	"runtime"
 )
 
 const __FILE_CONSTANT_E_LOCATION_ string = "../assets/data.e"
@@ -24,7 +26,15 @@ var __ERROR_float64__ float64 = 7.123456789e-16
 var CONSTANT_E []uint8
 var CONSTANT_PI []uint8
 
-func inputEpsilon(_input []uint8) {
+func GetEpsilon() []uint8 {
+	return epsilon
+}
+
+func SetEpsilon(_input []uint8) {
+	epsilon = _input
+}
+
+func InputEpsilon(_input []uint8) {
 	epsilon = _input
 
 	// Revert
@@ -33,7 +43,7 @@ func inputEpsilon(_input []uint8) {
 	}
 }
 
-func inputEpsilonAsString(_input string) {
+func InputEpsilonAsString(_input string) {
 	epsilon = []uint8{}
 	for _, value := range _input {
 		switch value {
@@ -52,7 +62,7 @@ func inputEpsilonAsString(_input string) {
 	}
 }
 
-func inputEpsilonAsString_NonRevert(_input string) {
+func InputEpsilonAsString_NonRevert(_input string) {
 	epsilon = []uint8{}
 	for _, value := range _input {
 		switch value {
@@ -66,8 +76,12 @@ func inputEpsilonAsString_NonRevert(_input string) {
 	}
 }
 
-func prepare_CONSTANT_E_asEpsilon() error {
-	dat, err := ioutil.ReadFile(__FILE_CONSTANT_E_LOCATION_)
+func Prepare_CONSTANT_E_asEpsilon() error {
+	var (
+		_, b, _, _ = runtime.Caller(0)
+		basepath   = filepath.Dir(b)
+	)
+	dat, err := ioutil.ReadFile(basepath + "/" + __FILE_CONSTANT_E_LOCATION_)
 	var constant_E_binary []uint8
 	if err != nil {
 		panic(err)
@@ -85,8 +99,12 @@ func prepare_CONSTANT_E_asEpsilon() error {
 	return nil
 }
 
-func prepare_CONSTANT_PI_asEpsilon() error {
-	dat, err := ioutil.ReadFile(__FILE_CONSTANT_PI_LOCATION_)
+func Prepare_CONSTANT_PI_asEpsilon() error {
+	var (
+		_, b, _, _ = runtime.Caller(0)
+		basepath   = filepath.Dir(b)
+	)
+	dat, err := ioutil.ReadFile(basepath + "/" + __FILE_CONSTANT_PI_LOCATION_)
 	var constant_PI_binary []uint8
 	if err != nil {
 		panic(err)
