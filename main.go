@@ -34,9 +34,15 @@ func main() {
 	if readERR != nil {
 		panic("FAILED to load natural PI")
 	}
-	SetEpsilon(GetEpsilon()[0:1000000]) // Put Your Data here.
-	SetLevel(0.01)
 
+	// 1st param : Test bits, whose type is []uint8
+	// 2nd param : LEVEL to decide whether Random or not. Should be 0 < LEVEL < 1
+	Examine_NIST_SP800_22(GetEpsilon()[0:1000000], 0.01)
+
+}
+
+// 0 < level < 1
+func Examine_NIST_SP800_22(testBit []uint8, level float64) {
 	var P_values []float64
 	var isRandoms []bool
 
@@ -44,7 +50,9 @@ func main() {
 	var isRandom bool
 	var err error
 
-	var n uint64 = uint64(len(GetEpsilon()))
+	InputEpsilon(testBit)
+	SetLevel(level)
+	var n uint64 = uint64(len(testBit))
 
 	// Initialize Printer
 	PrettyPrint_Init()
