@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"reflect"
 	"testing"
+
+	"github.com/mjibson/go-dsp/fft"
 )
 
 // generateRandomBitArray() is using Package rand, which implements a cryptographically secure random number generator.
@@ -117,7 +119,7 @@ func TestNonOverlappingTemplateMatching(t *testing.T) {
 
 func TestOverlappingTemplateMatching(t *testing.T) {
 	/*
-		readERR := prepare_CONSTANT_E_asEpsilon()
+		readERR := Prepare_CONSTANT_E_asEpsilon()
 		if readERR != nil {
 			t.Error("FAILED TO GET CONSTANT E")
 		}
@@ -125,7 +127,7 @@ func TestOverlappingTemplateMatching(t *testing.T) {
 	*/
 	InputEpsilonAsString_NonRevert("10111011110010110100011100101110111110000101101001")
 
-	// theTemplate := []uint8{1, 1, 1, 1, 1, 1, 1, 1, 1}
+	//theTemplate := []uint8{1, 1, 1, 1, 1, 1, 1, 1, 1}
 	theTemplate := []uint8{1, 1}
 
 	P_value, _, _ := OverlappingTemplateMatching(theTemplate, 10)
@@ -155,9 +157,8 @@ func TestSerial(t *testing.T) {
 	}
 	epsilon = epsilon[0:1000000]
 
-	P_value1, P_value2, _, _ := Serial(2, uint64(len(epsilon)))
-	fmt.Printf("P-value1 : %f\n", P_value1)
-	fmt.Printf("P_value2 : %f\n", P_value2)
+	P_values, _, _ := Serial(2, uint64(len(epsilon)))
+	fmt.Printf("P-value : %f\n", P_values)
 }
 
 func TestApproximateEntropy(t *testing.T) {
@@ -207,7 +208,11 @@ func TestFunctions(t *testing.T) {
 	fmt.Println("isEqual", reflect.DeepEqual(a, b))
 }
 
+// Run all Benchmark
+// go test -bench=^Benchmark . -run=^$ . -v -benchtime 5s -benchmem
+
 func BenchmarkMyFunction(b *testing.B) {
+	// go test -bench=^BenchmarkMyFunction . -run=^$ . -v -benchtime 5s -benchmem
 	a1 := Uint_To_BitsArray(^uint64(0))
 	a2 := Uint_To_BitsArray(^uint64(0))
 	for i := 0; i < b.N; i++ {
@@ -216,9 +221,40 @@ func BenchmarkMyFunction(b *testing.B) {
 }
 
 func BenchmarkReflect(b *testing.B) {
+	// go test -bench=^BenchmarkReflect . -run=^$ . -v -benchtime 5s -benchmem
 	a1 := Uint_To_BitsArray(^uint64(0))
 	a2 := Uint_To_BitsArray(^uint64(0))
 	for i := 0; i < b.N; i++ {
 		reflect.DeepEqual(a1, a2)
+	}
+}
+
+func BenchmarkDFT(b *testing.B) {
+	// go test -bench=^BenchmarkDFT . -run=^$ . -v -benchtime 5s -benchmem
+	Prepare_CONSTANT_E_asEpsilon()
+	epsilon = epsilon[0:10000]
+	// InputEpsilonAsString_NonRevert("1001010011")
+
+	var float64_epsilon []float64 = make([]float64, len(epsilon))
+	for i := range float64_epsilon {
+		float64_epsilon[i] = 2*float64(epsilon[i]) - 1
+	}
+	for i := 0; i < b.N; i++ {
+		DFT(float64_epsilon)
+	}
+}
+
+func BenchmarkFFT(b *testing.B) {
+	// go test -bench=^BenchmarkFFT . -run=^$ . -v -benchtime 5s -benchmem
+	Prepare_CONSTANT_E_asEpsilon()
+	epsilon = epsilon[0:1000000]
+	//InputEpsilonAsString_NonRevert("1001010011")
+
+	var float64_epsilon []float64 = make([]float64, len(epsilon))
+	for i := range float64_epsilon {
+		float64_epsilon[i] = 2*float64(epsilon[i]) - 1
+	}
+	for i := 0; i < b.N; i++ {
+		fft.FFTReal(float64_epsilon)
 	}
 }

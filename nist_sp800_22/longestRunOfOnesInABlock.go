@@ -14,6 +14,8 @@ package nist_sp800_22
 
 import "fmt"
 
+// Input Size Recommendation
+// n >= 128
 func LongestRunOfOnes(n uint64) (float64, bool, error) {
 	// Declare Constant
 	var _PI_K3_M8 [4]float64 = [4]float64{0.2148, 0.3672, 0.2305, 0.1875}
@@ -45,8 +47,8 @@ func LongestRunOfOnes(n uint64) (float64, bool, error) {
 
 	// Divide the sequence into M-bit blocks.
 	// sub_epsilons := [][]uint8{}
-	sliceBoundary_start := 0
-	sliceBoundary_end := 8
+	sliceBoundary_start := uint64(0)
+	sliceBoundary_end := M
 	v := [7]uint64{0, 0, 0, 0, 0, 0, 0}
 	for {
 		sub := epsilon[sliceBoundary_start:sliceBoundary_end]
@@ -110,12 +112,13 @@ func LongestRunOfOnes(n uint64) (float64, bool, error) {
 		}
 
 		// sub_epsilons = append(sub_epsilons, sub)
-		sliceBoundary_start = sliceBoundary_start + 8
-		sliceBoundary_end = sliceBoundary_end + 8
-		if sliceBoundary_end > len(epsilon) {
+		sliceBoundary_start = sliceBoundary_start + M
+		sliceBoundary_end = sliceBoundary_end + M
+		if sliceBoundary_end > uint64(len(epsilon)) {
 			break
 		}
 	}
+
 	// (3) Compute Test Statistic and Reference Distribution χ^2
 	var chi_square float64 = 0
 	var i uint64
@@ -157,7 +160,6 @@ func LongestRunOfOnes(n uint64) (float64, bool, error) {
 	}
 
 	// (4) Compute P-value
-	// var P_value float64 = igamc(float64(K)/2.0, chi_square/2.0)
 	P_value := igamc(float64(K)/2.0, chi_square/2.0)
 
 	return P_value, DecisionRule(P_value, LEVEL), nil

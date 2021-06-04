@@ -10,7 +10,7 @@ import (
 	"math"
 )
 
-func RandomExcursionsVariant(n uint64) ([]float64, bool, error) {
+func RandomExcursionsVariant(n uint64) ([]float64, []bool, error) {
 
 	var State_X []int64 = []int64{-9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9}
 
@@ -80,5 +80,5 @@ func RandomExcursionsVariant(n uint64) ([]float64, bool, error) {
 		}
 		fmt.Println("--------------------------------------------------------------------------")
 	*/
-	return P_value, false, nil
+	return P_value, randomness, nil
 }

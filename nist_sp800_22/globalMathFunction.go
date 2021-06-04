@@ -26,6 +26,45 @@ func DecisionRule2(_P_value1 float64, _P_value2 float64, level float64) bool {
 	}
 }
 
+// Motivated : https://github.com/mjibson/go-dsp/blob/master/fft/fft.go
+func FFT(X []float64) ([]float64, []float64) {
+	var N float64 = float64(len(X))
+	var real []float64 = make([]float64, len(X))
+	var imag []float64 = make([]float64, len(X))
+
+	var percentage float64 = 0.0
+	var point1 int = len(X) / 1000
+
+	if N <= 1 {
+		panic("input is too small (len(input) <= 1)")
+	}
+
+	// IsPowerOf2 returns true if x is a power of 2, else false.
+	if len(X)&(len(X)-1) == 0 {
+		// return radix2FFT(x)
+	}
+
+	// return bluesteinFFT(x)
+
+	var _2_pi_divide_N float64 = 2 * math.Pi / N
+	for k := range X {
+		var r float64 = 0.0
+		var i float64 = 0.0
+		for n := 0; n < len(X); n++ {
+			r = r + X[n]*math.Cos(_2_pi_divide_N*float64(k)*float64(n))
+			i = i + X[n]*math.Sin(_2_pi_divide_N*float64(k)*float64(n))
+		}
+		real[k] = r
+		imag[k] = i
+
+		if k%point1 == 0 {
+			percentage = percentage + 0.1
+			// fmt.Printf("%.1f%%\n", percentage)
+		}
+	}
+	return real, imag
+}
+
 /**
 * According to, NIST SP800-22 Page 99, Gamma Function and Imcomplete Gamma Function are described
 * Fully Implemented from Cephes C

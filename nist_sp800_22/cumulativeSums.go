@@ -81,3 +81,9 @@ func CumulativeSums(mode int, n uint64) (float64, bool, error) {
 
 	return P_value, DecisionRule(P_value, LEVEL), nil
 }
+
+func CumulativeSums_All() ([]float64, []bool, error) {
+	forward_P, forward_R, _ := CumulativeSums(0, uint64(len(epsilon)))
+	backward_P, backward_R, _ := CumulativeSums(1, uint64(len(epsilon)))
+	return []float64{forward_P, backward_P}, []bool{forward_R, backward_R}, nil
+}

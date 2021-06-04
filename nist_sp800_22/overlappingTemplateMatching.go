@@ -11,16 +11,13 @@
 package nist_sp800_22
 
 import (
+	"fmt"
 	"math"
 )
 
-// Original Function in Official Document was func NonOverlappingTemplateMatching(m uint64, n uint64, eachBlockSize uint64)
-// However, this parameter look slightly odd to Golang. So, I changed.
-//
-// Variable B
-// The m-bit template to be matched
-// B is a string of ones and zeros (of length m)
-// which is defined in a template library of non-periodic patterns contained within the test code.
+// Input Size Recommendation
+// NIST recommends m = 9 or m = 10, n >= 10^6
+// m should be chosen so that m ≈ log_2(M)
 func OverlappingTemplateMatching(B []uint8, eachBlockSize uint64) (float64, bool, error) {
 
 	// Original Parameter
@@ -42,30 +39,47 @@ func OverlappingTemplateMatching(B []uint8, eachBlockSize uint64) (float64, bool
 	}
 	// fmt.Println("N", N)
 
-	var hit uint64 = 0
+	//var hit uint64 = 0
 	// (2) Search for matches
-	for j := range blocks {
-		hit = 0
-		for bitPosition := 0; bitPosition <= int(M)-m; bitPosition++ {
-			for i := range B {
-				if blocks[j][bitPosition+i] != B[i] {
-					goto UN_HIT
+	var numberOfOccurrences uint64
+	for _, eachBlock := range blocks {
+		numberOfOccurrences = 0
+		for bitPosition := 0; bitPosition <= len(eachBlock)-m; bitPosition++ {
+			if isEqualBetweenBitsArray(eachBlock[bitPosition:bitPosition+m], B) {
+				numberOfOccurrences++
+				if numberOfOccurrences >= 5 {
+					goto RECORD_V_ARRAY
 				}
 			}
-			// Hit
-			hit++
-		UN_HIT:
 		}
-		// Misprint
-		// In this part, There is example error. Page 40.
-		if hit > 0 {
-			if hit > 5 {
-				v[5]++
-			} else {
-				v[hit]++
+	RECORD_V_ARRAY:
+		v[numberOfOccurrences]++
+	}
+
+	/*
+		for j := range blocks {
+			hit = 0
+			for bitPosition := 0; bitPosition <= int(M)-m; bitPosition++ {
+				for i := range B {
+					if blocks[j][bitPosition+i] != B[i] {
+						goto UN_HIT
+					}
+				}
+				// Hit
+				hit++
+			UN_HIT:
+			}
+			// Misprint
+			// In this part, There is example error. Page 40.
+			if hit > 0 {
+				if hit > 5 {
+					v[5]++
+				} else {
+					v[hit]++
+				}
 			}
 		}
-	}
+	*/
 
 	// (3) Compute values for λand η
 	// that will be used to compute the theoretical probabilities π_i corresponding to the classes of v0:
@@ -90,14 +104,18 @@ func OverlappingTemplateMatching(B []uint8, eachBlockSize uint64) (float64, bool
 		sum += pi[i]
 	}
 	pi[K] = 1 - sum
-	// fmt.Println(pi)
+	fmt.Println("N", N)
+	fmt.Println("v", v)
+	fmt.Println("pi", pi)
 
 	var chi_square float64 = 0
+	var _float64_N_ float64 = float64(N)
 	for i := range v {
-		var temp float64 = 5.0 * pi[i]
+		var temp float64 = _float64_N_ * pi[i]
 		chi_square += (v[i] - temp) * (v[i] - temp) / temp
+		fmt.Println(i, (v[i]-temp)*(v[i]-temp)/temp)
 	}
-	// fmt.Println("chi_square\t", chi_square)
+	fmt.Println("chi_square\t", chi_square)
 
 	// (5) Compute P-value
 	var P_value float64 = igamc(2.5, chi_square/2.0)

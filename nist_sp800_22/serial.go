@@ -11,7 +11,9 @@ import (
 	"math"
 )
 
-func Serial(m uint64, n uint64) (float64, float64, bool, error) {
+// Input Size Recommendation
+// Choose m and n such that m < floor(log_2 (n))- 2.
+func Serial(m uint64, n uint64) ([]float64, []bool, error) {
 
 	var v [][]uint64 = make([][]uint64, 3)
 	var section2_index uint64
@@ -62,5 +64,8 @@ func Serial(m uint64, n uint64) (float64, float64, bool, error) {
 	P_value1 := igamc(tempArg, delta1/2.0)
 	P_value2 := igamc(tempArg/2.0, delta2/2.0)
 
-	return P_value1, P_value2, DecisionRule2(P_value1, P_value2, LEVEL), nil
+	retP_value := []float64{P_value1, P_value2}
+	retBools := []bool{DecisionRule(P_value1, LEVEL), DecisionRule(P_value2, LEVEL)}
+
+	return retP_value, retBools, nil
 }

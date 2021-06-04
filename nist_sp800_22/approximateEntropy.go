@@ -9,8 +9,8 @@ import (
 	"math"
 )
 
-// param m: The length of each block
-// param n: len(epsilon) :: The length of the entire bit sequence.
+// Input Size Recommendation
+// Choose m and n such that m < floor(log_2 (n))- 5.
 func ApproximateEntropy(m uint64, n uint64) (float64, bool, error) {
 	var psi [2]float64 // (5) Repeat twice
 	var original_m = m

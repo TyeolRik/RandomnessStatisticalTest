@@ -29,14 +29,9 @@ func piWithBaseI(M uint64, N uint64) []float64 {
 	return ret
 }
 
-/**
-* BlockFrequency is implementation of Frequency Test within a Block from NIST SP800-22
-
-* M is The length of each block.
-* n is The length of the bit string.
-
-* This function returns P_value in float64
- */
+// Input Size Recommendation
+// The block size M should be selected such that M >= 20, M > 0.01n and N < 100.
+// n >= 100
 func BlockFrequency(M uint64, n uint64) (float64, bool, error) {
 
 	// (1) Partition the input sequence into N = floor(n / M) non-overlapping blocks

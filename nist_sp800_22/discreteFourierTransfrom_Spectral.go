@@ -11,6 +11,9 @@ package nist_sp800_22
 
 import (
 	"math"
+	"math/cmplx"
+
+	"github.com/mjibson/go-dsp/fft"
 )
 
 // Discrete Fourier Transform
@@ -20,6 +23,9 @@ func DFT(X []float64) ([]float64, []float64) {
 	var N float64 = float64(len(X))
 	var real []float64 = make([]float64, len(X))
 	var imag []float64 = make([]float64, len(X))
+
+	//var percentage float64 = 0.0
+	//var point1 int = len(X) / 1000
 
 	var _2_pi_divide_N float64 = 2 * math.Pi / N
 	for k := range X {
@@ -31,6 +37,12 @@ func DFT(X []float64) ([]float64, []float64) {
 		}
 		real[k] = r
 		imag[k] = i
+		/*
+			if k%point1 == 0 {
+				percentage = percentage + 0.1
+				// fmt.Printf("%.1f%%\n", percentage)
+			}
+		*/
 	}
 	return real, imag
 }
@@ -43,6 +55,15 @@ func Modulus(real, imag []float64) []float64 {
 		modulus[i] = math.Sqrt(real[i]*real[i] + imag[i]*imag[i])
 	}
 	return modulus
+}
+
+func modulus_using_cmplx_abs(input []complex128) []float64 {
+	var half int = len(input) / 2
+	var ret []float64 = make([]float64, half)
+	for i := 0; i < half; i++ {
+		ret[i] = cmplx.Abs(input[i])
+	}
+	return ret
 }
 
 /* Unused
@@ -99,12 +120,19 @@ func DiscreteFourierTransform(n uint64) (float64, bool, error) {
 
 	// (2) Apply a Discrete Fourier transform (DFT) on X to produce: S = DFT(X).
 	// real, imag := DFT_naive(X)
-	real, imag := DFT(X)
+	// real, imag := DFT(X)
+
+	// (2)' Apply a Discrete Fourier transform (DFT) on X to produce: S = DFT(X).
+	// For Fast, I will use Fast-Fourier transform. https://github.com/mjibson/go-dsp/tree/11479a337f1259210b7c8f93f7bf2b0cc87b066e
+	S := fft.FFTReal(X)
 
 	// (3) Calculate M = modulus(S´) ≡ |S'|,
 	// where S´ is the substring consisting of the first n/2 elements in S,
 	// and the modulus function produces a sequence of peak heights.
-	M := Modulus(real, imag)
+	// M := Modulus(real, imag)
+
+	// (3)' Because S is []complex128, I will use math/cmplx.Abs()
+	M := modulus_using_cmplx_abs(S)
 
 	// (4) Compute T
 	T := math.Sqrt(2.995732274 * float64(n)) // math.Log(1.0/0.05) = 2.995732273553991
@@ -127,6 +155,7 @@ func DiscreteFourierTransform(n uint64) (float64, bool, error) {
 		}
 	}
 	N1 = count
+	//fmt.Println(M)
 	//fmt.Println("N1", count)
 
 	// (7) Compute d

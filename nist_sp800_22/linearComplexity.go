@@ -122,6 +122,8 @@ func BerlekampMasseyAlgorithm(s []uint8) uint64 {
 	return uint64(L)
 }
 
+// Input Size Recommendation
+// n >= 10^6, 500 <= M <= 5000, (n / M) >= 200
 func LinearComplexity(M uint64, n uint64) (float64, bool, error) {
 	// var K uint64 // The number of degrees of freedom
 

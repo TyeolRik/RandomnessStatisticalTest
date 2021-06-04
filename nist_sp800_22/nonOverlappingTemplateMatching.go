@@ -16,6 +16,8 @@ import (
 	"math"
 )
 
+// Input Size Recommendation
+// Additionally, be sure that M > 0.01 * n and N=floor(n/M).
 // Original Function in Official Document was func NonOverlappingTemplateMatching(m uint64, n uint64, eachBlockSize uint64)
 // However, this parameter look slightly odd to Golang. So, I changed.
 //

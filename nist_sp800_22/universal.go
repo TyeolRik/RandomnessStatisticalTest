@@ -10,6 +10,46 @@ import (
 	"math"
 )
 
+func recommandedInputSize(n uint64) (L uint64, Q uint64) {
+	if n >= 1059061760 {
+		L = 16
+		Q = 655360
+	} else if n >= 496435200 {
+		L = 15
+		Q = 327680
+	} else if n >= 231669760 {
+		L = 14
+		Q = 163840
+	} else if n >= 107560960 {
+		L = 13
+		Q = 81920
+	} else if n >= 49643520 {
+		L = 12
+		Q = 40960
+	} else if n >= 22753280 {
+		L = 11
+		Q = 20480
+	} else if n >= 10342400 {
+		L = 10
+		Q = 10240
+	} else if n >= 4654080 {
+		L = 9
+		Q = 5120
+	} else if n >= 2068480 {
+		L = 8
+		Q = 2560
+	} else if n >= 904960 {
+		L = 7
+		Q = 1280
+	} else if n >= 387840 {
+		L = 6
+		Q = 640
+	} else {
+		panic("length of test case is too small!")
+	}
+	return
+}
+
 func array2Binaryint(arr []uint8) uint64 {
 	var numberOfDigit uint64 = 1
 	var _index_T uint64 = 0
@@ -23,6 +63,10 @@ func array2Binaryint(arr []uint8) uint64 {
 	return _index_T
 }
 
+// Input Size Recommendation
+// n >= (Q + K)L
+// 6 <= L <= 16, Q = 10 * 2^{L}, K =floor(n/L)- Q ≈ 1000 * 2^{L}
+// The values of L, Q and n should be chosen as follows
 func Universal(L uint64, Q uint64, n uint64) (float64, bool, error) {
 	// Pre-calculated Value from "Handbook of Applied Cryptography", Page 184. Table 5.3
 	var expectedValue_mu [16]float64 = [16]float64{0.7326495, 1.5374383, 2.4016068, 3.3112247, 4.2534266, 5.2177052, 6.1962507, 7.1836656, 8.1764248, 9.1723243, 10.170032, 11.168765, 12.168070, 13.167693, 14.167488, 15.167379}
@@ -74,4 +118,10 @@ func Universal(L uint64, Q uint64, n uint64) (float64, bool, error) {
 	// P_value := math.Erfc(math.Abs(son / mom))
 
 	return P_value, DecisionRule(P_value, LEVEL), nil
+}
+
+func Universal_Recommended() (float64, bool, error) {
+	var n uint64 = uint64(len(epsilon))
+	L, Q := recommandedInputSize(n)
+	return Universal(L, Q, n)
 }
