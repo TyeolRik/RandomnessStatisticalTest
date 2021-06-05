@@ -16,7 +16,7 @@ So, NIST SP800-22 tests focus on statistics. Because random bits and coin flips 
 ```go
 func main() {
     Prepare_CONSTANT_E_asEpsilon()          // Input is natural number E in binary.
-	testArray := GetEpsilon()[0:1000000]    // Epsilon means test bits (in terms of NIST SP800-22)
+    testArray := GetEpsilon()[0:1000000]    // Epsilon means test bits (in terms of NIST SP800-22)
     Examine_NIST_SP800_22(testArray, 0.01)  // Examine 15 tests.
 }
 ```
