@@ -30,14 +30,16 @@ func main() {
 	//      - Source file : /assets/data.pi
 	//      - Same as Prepare_CONSTANT_E_asEpsilon. The only difference is not E but PI.
 
-	readERR := Prepare_CONSTANT_PI_asEpsilon()
+	readERR := Prepare_CONSTANT_E_asEpsilon()
 	if readERR != nil {
-		panic("FAILED to load natural PI")
+		panic("FAILED to load natural E")
 	}
+
+	testArray := GetEpsilon()[0:1000000]
 
 	// 1st param : Test bits, whose type is []uint8
 	// 2nd param : LEVEL to decide whether Random or not. Should be 0 < LEVEL < 1
-	Examine_NIST_SP800_22(GetEpsilon()[0:1000000], 0.01)
+	Examine_NIST_SP800_22(testArray, 0.01)
 
 }
 

@@ -1,5 +1,6 @@
 {
     "files.associations": {
         "random": "cpp"
-    }
+    },
+    "markdown-preview-enhanced.mathRenderingOption": "MathJax"
 }
