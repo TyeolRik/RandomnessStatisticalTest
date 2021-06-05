@@ -11,7 +11,6 @@
 package nist_sp800_22
 
 import (
-	"fmt"
 	"math"
 )
 
@@ -101,21 +100,21 @@ func OverlappingTemplateMatching(B []uint8, eachBlockSize uint64) (float64, bool
 	K := 5
 	for i := 0; i < K; i++ {
 		pi[i] = Pr(i, eta)
+		// fmt.Printf("Pr(%d, %.1f) = %.8f\n", i, eta, Pr(i, eta))
 		sum += pi[i]
 	}
 	pi[K] = 1 - sum
-	fmt.Println("N", N)
-	fmt.Println("v", v)
-	fmt.Println("pi", pi)
+	// fmt.Println("N", N)
+	// fmt.Println("v", v)
+	// fmt.Println("pi", pi)
 
 	var chi_square float64 = 0
 	var _float64_N_ float64 = float64(N)
 	for i := range v {
 		var temp float64 = _float64_N_ * pi[i]
 		chi_square += (v[i] - temp) * (v[i] - temp) / temp
-		fmt.Println(i, (v[i]-temp)*(v[i]-temp)/temp)
 	}
-	fmt.Println("chi_square\t", chi_square)
+	// fmt.Println("chi_square\t", chi_square)
 
 	// (5) Compute P-value
 	var P_value float64 = igamc(2.5, chi_square/2.0)
@@ -186,8 +185,9 @@ func Pr(u int, eta float64) float64 {
 		for l = 1; l <= u; l++ {
 			lgam_u, _ := math.Lgamma(float64(u))
 			lgam_l, _ := math.Lgamma(float64(l))
+			lgam_l_plus1, _ := math.Lgamma(float64(l + 1))
 			lgam_u_l_plus1, _ := math.Lgamma(float64(u - l + 1))
-			sum += math.Exp(-1*eta - float64(u)*math.Log(2) + float64(l)*math.Log(eta) - lgam_u - lgam_l - lgam_u_l_plus1)
+			sum += math.Exp(-1*eta - float64(u)*math.Log(2) + float64(l)*math.Log(eta) - lgam_l_plus1 + lgam_u - lgam_l - lgam_u_l_plus1)
 		}
 		p = sum
 	}

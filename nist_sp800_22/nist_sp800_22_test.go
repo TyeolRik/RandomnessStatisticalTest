@@ -118,22 +118,25 @@ func TestNonOverlappingTemplateMatching(t *testing.T) {
 }
 
 func TestOverlappingTemplateMatching(t *testing.T) {
-	/*
-		readERR := Prepare_CONSTANT_E_asEpsilon()
-		if readERR != nil {
-			t.Error("FAILED TO GET CONSTANT E")
-		}
-		epsilon = epsilon[0:1000000]
-	*/
-	InputEpsilonAsString_NonRevert("10111011110010110100011100101110111110000101101001")
+	readERR := Prepare_CONSTANT_E_asEpsilon()
+	if readERR != nil {
+		t.Error("FAILED TO GET CONSTANT E")
+	}
+	epsilon = epsilon[0:1000000]
 
-	//theTemplate := []uint8{1, 1, 1, 1, 1, 1, 1, 1, 1}
-	theTemplate := []uint8{1, 1}
+	theTemplate := []uint8{1, 1, 1, 1, 1, 1, 1, 1, 1}
 
-	P_value, _, _ := OverlappingTemplateMatching(theTemplate, 10)
+	P_value, _, _ := OverlappingTemplateMatching(theTemplate, 1032)
 	fmt.Printf("P-value : %f\n", P_value)
 }
 
+/*
+func TestOverlappingTemplateMatchingExample(t *testing.T) {
+	InputEpsilonAsString_NonRevert("10111011110010110100011100101110111110000101101001")
+	P_value, _, _ := OverlappingTemplateMatching([]uint8{1, 1}, 10)
+	fmt.Println("P_value", P_value)
+}
+*/
 func TestUniversal(t *testing.T) {
 	InputEpsilonAsString_NonRevert("01011010011101010111")
 	P_value, _, _ := Universal(2, 4, uint64(len(epsilon)))
