@@ -52,6 +52,11 @@ func BlockFrequency(M uint64, n uint64) (float64, bool, error) {
 	}
 	var X2_statistic float64 = 4 * float64(M) * tempSum
 
+	// fmt.Println("X2_statistic", X2_statistic)
+	//fmt.Println("n", n)
+	//fmt.Println("M", M)
+	//fmt.Println("N", N)
+
 	// (4) Compute P-value
 	var P_value float64 = igamc(float64(N)/2.0, X2_statistic/2.0)
 	return P_value, DecisionRule(P_value, LEVEL), nil

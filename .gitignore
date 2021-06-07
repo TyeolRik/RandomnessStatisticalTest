@@ -24,6 +24,7 @@ constant_pi
 
 # Private Test Files
 *.old
+assets/systemRandom.dat
 
 # No use goroutine
 goroutine_test/

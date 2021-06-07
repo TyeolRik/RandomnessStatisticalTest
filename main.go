@@ -41,6 +41,18 @@ func main() {
 	// 2nd param : LEVEL to decide whether Random or not. Should be 0 < LEVEL < 1
 	Examine_NIST_SP800_22(testArray, 0.01)
 
+	/*
+		// Error file should be tested
+		// Open the file.
+		fileLocation := "./assets/systemRandom.dat"
+		dat, _ := ioutil.ReadFile(fileLocation)
+		var testArray []uint8
+		for _, eachData := range dat {
+			testArray = append(testArray, Uint_To_BitsArray_size_N(uint64(eachData), 8)...)
+		}
+		dat = nil
+		Examine_NIST_SP800_22(testArray, 0.01)
+	*/
 }
 
 // 0 < level < 1
@@ -67,7 +79,20 @@ func Examine_NIST_SP800_22(testBit []uint8, level float64) {
 	PrettyPrint_Add("The Frequency (Monobit) Test", P_value, isRandom)
 
 	// 2.2 Frequency Test within a Block (Page 26)
-	P_value, isRandom, err = BlockFrequency(20, n)
+	// Input Size Recommendation
+	// The block size M should be selected such that M >= 20, M > 0.01n and N < 100.
+	// n >= 100
+	// Select M as recommendation
+	var blockFrequencyInput_M uint64 = 20
+	for {
+		var blockFrequencyInput_N uint64 = n / blockFrequencyInput_M
+		if blockFrequencyInput_M > uint64(0.01*float64(n)) && blockFrequencyInput_N < 100 {
+			break
+		} else {
+			blockFrequencyInput_M++
+		}
+	}
+	P_value, isRandom, err = BlockFrequency(blockFrequencyInput_M, n)
 	if err != nil {
 		panic(err)
 	}
@@ -102,26 +127,42 @@ func Examine_NIST_SP800_22(testBit []uint8, level float64) {
 	PrettyPrint_Add("The Discrete Fourier Transform (Spectral) Test", P_value, isRandom)
 
 	// 2.7 The Non-overlapping Template Matching Test (Page 36)
-	var m uint64 = 10 // Block Size
+	var nonOverlappingTemplateSize uint64 = 8 // Block Size
 	P_values = []float64{}
 	isRandoms = []bool{}
-	for i := 1; i < 500; i = i + 2 {
-		P_value, isRandom, _ = NonOverlappingTemplateMatching(Uint_To_BitsArray_size_N(uint64(i), m), 10000)
+	nonOverlappingBlockMax := 1
+	for i := 0; i < int(nonOverlappingTemplateSize); i++ {
+		nonOverlappingBlockMax *= 2
+	}
+	for i := 1; i < nonOverlappingBlockMax; i = i + 2 {
+		P_value, isRandom, _ = NonOverlappingTemplateMatching(Uint_To_BitsArray_size_N(uint64(i), nonOverlappingTemplateSize), uint64(len(GetEpsilon()))/nonOverlappingTemplateSize)
 		P_values = append(P_values, P_value)
 		isRandoms = append(isRandoms, isRandom)
 	}
 	PrettyPrint_Add_Array("The Non-overlapping Template Matching Test", P_values, isRandoms)
 
 	// 2.8 The Overlapping Template Matching Test (Page 39)
-	// [Working now] There are lots of error in official document. I need time to cross check.
-	//InputEpsilonAsString_NonRevert("10111011110010110100011100101110111110000101101001")
-	//P_value, isRandom, err = OverlappingTemplateMatching([]uint8{1, 1}, 10)
-	//P_value, isRandom, err = OverlappingTemplateMatching([]uint8{1, 1, 1, 1, 1, 1, 1, 1, 1}, 1032)
+	/*
+		var overlappingTemplateSize uint64 = 8 // Template Size
+		P_values = []float64{}
+		isRandoms = []bool{}
+		overlappingBlockMax := 1
+		for i := 0; i < int(overlappingTemplateSize); i++ {
+			overlappingBlockMax *= 2
+		}
+		for i := 1; i < overlappingBlockMax/10; i = i + 2 {
+			P_value, isRandom, _ = OverlappingTemplateMatching(Uint_To_BitsArray_size_N(uint64(i), overlappingTemplateSize), 1032)
+			P_values = append(P_values, P_value)
+			isRandoms = append(isRandoms, isRandom)
+		}
+		PrettyPrint_Add_Array("The Overlapping Template Matching Test", P_values, isRandoms)
+	*/
+	P_value, isRandom, err = OverlappingTemplateMatching(Uint_To_BitsArray_size_N(511, 9), 1032)
 	// P_value, isRandom, err = OverlappingTemplateMatching([]uint8{0, 1, 0, 1, 0, 1, 0, 1, 0, 1}, 1000)
-	//if err != nil {
-	//	panic(err)
-	//}
-	//PrettyPrint_Add("The Discrete Fourier Transform (Spectral) Test", P_value, isRandom)
+	if err != nil {
+		panic(err)
+	}
+	PrettyPrint_Add("The Overlapping Template Matching Test", P_value, isRandom)
 
 	// 2.9 Maurer's "Universal Statistical" Test
 	P_value, isRandom, err = Universal_Recommended()

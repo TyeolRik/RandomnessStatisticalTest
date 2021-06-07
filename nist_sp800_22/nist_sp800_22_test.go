@@ -124,7 +124,7 @@ func TestOverlappingTemplateMatching(t *testing.T) {
 	}
 	epsilon = epsilon[0:1000000]
 
-	theTemplate := []uint8{1, 1, 1, 1, 1, 1, 1, 1, 1}
+	theTemplate := Uint_To_BitsArray_size_N(511, 9)
 
 	P_value, _, _ := OverlappingTemplateMatching(theTemplate, 1032)
 	fmt.Printf("P-value : %f\n", P_value)
