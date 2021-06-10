@@ -1,6 +1,8 @@
 # Randomness Statistical Test
 
-I haven't finished implementing NIST SP800-22. **There is no "2.8 The Overlapping Template Matching Test"**. Because there is some misprint and errors in official documents. I need time to cross-check. :(
+## Developer Comments
+
+If you want to test Randomness of specific bit stream, you should read official documents or comments which is in codes and about Input recommendation. I checked some bit streams with variable length, but some tests weren't completed due to calculation problem. I need time to find out why this happened. NIST SP800-22 recommends that one bit stream doesn't fit all tests at once (because of statistical recommended length). I'm trying to find out the way to _ONE SIZE FITS ALL_
 
 ## Introduction
 
