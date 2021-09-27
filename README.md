@@ -4,6 +4,8 @@
 
 If you want to test Randomness of specific bit stream, you should read official documents or comments which is in codes and about Input recommendation. I checked some bit streams with variable length, but some tests weren't completed due to calculation problem. I need time to find out why this happened. NIST SP800-22 recommends that one bit stream doesn't fit all tests at once (because of statistical recommended length). I'm trying to find out the way to _ONE SIZE FITS ALL_
 
+In section 5.6, NIST SP800-22 paper, there is instruction for testing input file, which means your personnally generated data file. So, you can check the template of input file. For example, in paper, ```data/data.pi```. I checked several test and reveal that you can save UINT64 as raw 8 bytes in Big-endian. In other words, NIST SP800-22 shows you **same results if you use ASCII binary or byte file which is written by byte in big-endian**. It is obvious that writing byte is more better from a Computer scientist's view. Because, if you write one 64-bits integer, it is just 8-bytes. But if you write in ASCII, file needs 256-bits (= 64-bits * 1 byte, because ASCII char cost 1 byte). That means you are wasting almost 8 times memory. ~~And also reading ASCII char and converting to binary could cost time. Not sure.~~
+
 ## Introduction
 
 This project implements "Randomness Statistical Tests" in Go-Language (1.16.4).
